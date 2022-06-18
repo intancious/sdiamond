@@ -27,7 +27,7 @@ Route::get('/', function () {
 // });
 
 
-Route::group(['middleware' => ['auth:sanctum', 'verified', 'admin']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // produk
     Route::get('/products', [ProductController::class, 'index'])->name('product.index');
