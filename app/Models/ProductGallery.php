@@ -15,9 +15,13 @@ class ProductGallery extends Model
         'products_id', 'url', 'is_featured'
     ];
 
-    
-    public function getUrlAttribute($url)
+    public function product()
     {
-        return config('app.url') . Storage::url($url);
+        return $this->belongsTo(Product::class, 'products_id', 'id');
     }
+
+    // public function getUrlAttribute($url)
+    // {
+    //     return config('app.url') . Storage::url($url);
+    // }
 }

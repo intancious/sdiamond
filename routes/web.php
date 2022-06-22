@@ -3,8 +3,10 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductGalleryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransaksiUserController;
+use App\Http\Controllers\UserProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,11 +47,28 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::put('/category/update/{category}', [ProductCategoryController::class, 'update'])->name('category.update');
     Route::delete('/category/delete/{category}', [ProductCategoryController::class, 'destroy'])->name('category.delete');
 
+    // Galery
+    Route::get('/galery', [ProductGalleryController::class, 'index'])->name('galery.index');
+    Route::get('/galery/create', [ProductGalleryController::class, 'create'])->name('galery.create');
+    Route::post('/galery/save', [ProductGalleryController::class, 'store'])->name('galery.store');
+    // Route::get('/galery/edit/{galery}', [ProductGalleryController::class, 'edit'])->name('galery.edit');
+    // Route::put('/galery/update/{galery}', [ProductGalleryController::class, 'update'])->name('galery.update');
+    Route::delete('/galery/delete/{id}', [ProductGalleryController::class, 'destroy'])->name('galery.delete');
+
     // transaction
     Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('/transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
     Route::get('/transaction/edit/{transaction}', [TransactionController::class, 'edit'])->name('transaction.edit');
     Route::put('/transaction/update/{transaction}', [TransactionController::class, 'update'])->name('transaction.update');
     Route::get('/transaction/show/{transaction}', [TransactionController::class, 'show'])->name('transaction.show');
+
+    // USER
+    Route::get('/user/product', [UserProductController::class, 'index'])->name('userproduct.index');
+    // Route::get('/user/product/create', [UserProductController::class, 'create'])->name('userproduct.create');
+    // Route::post('/user/product/save', [UserProductController::class, 'store'])->name('userproduct.store');
+    // Route::get('/user/product/edit/{product}', [UserProductController::class, 'edit'])->name('userproduct.edit');
+    // Route::put('/user/product/update/{product}', [UserProductController::class, 'update'])->name('userproduct.update');
+    // Route::delete('/user/product/delete/{product}', [UserProductController::class, 'destroy'])->name('userproduct.delete');
 });
 
 

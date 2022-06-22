@@ -12,6 +12,9 @@
                     <div class="card mx-4 my-5">
                         <div class="card-header">
                             {{--  --}}
+                            {{-- <a href="{{ route('transaction.create') }}" class=" card-title btn btn-success"><i
+                                    class="fas fa-plus"></i> Tambah
+                                Transaksi</a> --}}
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">

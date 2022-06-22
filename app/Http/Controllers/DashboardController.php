@@ -10,8 +10,4 @@ class DashboardController extends Controller
     {
         return view('dashboard');
     }
-    public function user(Request $request)
-    {
-        return view('dashboard_user');
-    }
 }

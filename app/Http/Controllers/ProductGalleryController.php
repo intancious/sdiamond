@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Http\Requests\ProductGalleryRequest;
 use Illuminate\Http\Request;
 use App\Models\ProductGallery;
 use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\ProductGalleryRequest;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProductGalleryController extends Controller
 {
@@ -16,67 +16,66 @@ class ProductGalleryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Product $product)
+    public function index()
     {
-        if (request()->ajax()) {
-            $query = ProductGallery::where('products_id', $product->id);
-
-            return DataTables::of($query)
-                ->addColumn('action', function ($item) {
-                    return '
-                        <form class="inline-block" action="' . route('dashboard.gallery.destroy', $item->id) . '" method="POST">
-                        <button class="border border-red-500 bg-red-500 text-white rounded-md px-2 py-1 m-2 transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline" >
-                            Hapus
-                        </button>
-                            ' . method_field('delete') . csrf_field() . '
-                        </form>';
-                })
-                ->editColumn('url', function ($item) {
-                    return '<img style="max-width: 150px;" src="'. $item->url .'"/>';
-                })
-                ->editColumn('is_featured', function ($item) {
-                    return $item->is_featured ? 'Yes' : 'No';
-                })
-                ->rawColumns(['action', 'url'])
-                ->make();
-        }
-
-        return view('pages.dashboard.gallery.index', compact('product'));
+        $galery = ProductGallery::with('product')->get();
+        // return $galery;
+        // dd($galery);
+        return view('pages.galery.index', compact('galery'));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Product $product)
+    public function create()
     {
-        return view('pages.dashboard.gallery.create', compact('product'));
+        $produk = Product::all();
+        // dd($produk);
+        return view('pages.galery.create', compact('produk'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ProductGalleryRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductGalleryRequest $request, Product $product)
+    public function store(Request $request)
     {
-        $files = $request->file('files');
-
-        if($request->hasFile('files'))
-        {
-            foreach ($files as $file) {
-                $path = $file->store('public/gallery');
-
-                ProductGallery::create([
-                    'products_id' => $product->id,
-                    'url' => $path
-                ]);
-            }
+        // return $request->file('url')->store('gallery');
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'products_id'       => 'required',
+            'url'              => 'required|image|file||max:1024',
+        ]);
+        if ($request->file('url')) {
+            $validatedData['url'] = $request->file('url')->store('gallery', 'public');
         }
+        try {
+            $galery = ProductGallery::create($validatedData);
+            $produk = Product::findorfail($request->products_id);
 
-        return redirect()->route('dashboard.product.gallery.index', $product->id);
+            //save datanya
+            $dataSave = [
+                'id' => $galery->id,
+                'products_id' => $produk->id,
+            ];
+            ProductGallery::create($dataSave);
+
+            $message = "Berhasil";
+            $status = 1;
+        } catch (\Exception $e) {
+
+            // dd($e->getMessage());
+            $message = "Gagal";
+            $status = -1;
+        }
+        Alert::success('Selamat', 'Data Berhasil Ditambahkan!');
+        return redirect()->route('galery.index', $produk->id)
+            ->with('message', "Data $message Ditambahkan")
+            ->with('status', $status);
     }
 
     /**
@@ -119,10 +118,14 @@ class ProductGalleryController extends Controller
      * @param  \App\Models\ProductGallery  $productGallery
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductGallery $gallery)
+    public function destroy(ProductGallery $productGallery, $id)
     {
-        $gallery->delete();
-
-        return redirect()->route('dashboard.product.gallery.index', $gallery->products_id);
+        // dd($id);
+        // dd($productGallery);
+        // $productGallery->delete();
+        // $productGallery::destroy($productGallery->id);
+        ProductGallery::destroy($id);
+        Alert::success('Data Berhasil Dihapus!');
+        return redirect()->route('galery.index');
     }
 }

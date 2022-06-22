@@ -25,9 +25,23 @@
                             {{ __('Category') }}
                         </x-jet-nav-link>
 
+                        <x-jet-nav-link href="{{ route('galery.index') }}" :active="request()->routeIs('galery.index')">
+                            {{ __('Galery') }}
+                        </x-jet-nav-link>
                         <x-jet-nav-link href="{{ route('transaction.index') }}" :active="request()->routeIs('transaction.index')">
                             {{ __('Transaction') }}
                         </x-jet-nav-link>
+                        {{-- <x-jet-nav-link href="{{ route('user.index') }}" :active="request()->routeIs('user.index')">
+                            {{ __('User') }}
+                        </x-jet-nav-link> --}}
+                    @endif
+                    @if (Auth::user()->roles == 'USER')
+                        <x-jet-nav-link href="{{ route('userproduct.index') }}" :active="request()->routeIs('userproduct.index')">
+                            {{ __('Products') }}
+                        </x-jet-nav-link>
+                        {{-- <x-jet-nav-link href="{{ route('transaction.index') }}" :active="request()->routeIs('transaction.index')">
+                            {{ __('Transaction') }}
+                        </x-jet-nav-link> --}}
                     @endif
                 </div>
             </div>
@@ -179,8 +193,19 @@
                 <x-jet-responsive-nav-link href="{{ route('category.index') }}" :active="request()->routeIs('category.index')">
                     {{ __('Category') }}
                 </x-jet-responsive-nav-link>
+                <x-jet-responsive-nav-link href="{{ route('galery.index') }}" :active="request()->routeIs('galery.index')">
+                    {{ __('Galery') }}
+                </x-jet-responsive-nav-link>
                 <x-jet-responsive-nav-link href="{{ route('transaction.index') }}" :active="request()->routeIs('transaction.index')">
                     {{ __('Transaction') }}
+                </x-jet-responsive-nav-link>
+                {{-- <x-jet-responsive-nav-link href="{{ route('user.index') }}" :active="request()->routeIs('user.index')">
+                    {{ __('User') }}
+                </x-jet-responsive-nav-link> --}}
+            @endif
+            @if (Auth::user()->roles == 'USER')
+                <x-jet-responsive-nav-link href="{{ route('userproduct.index') }}" :active="request()->routeIs('userproduct.index')">
+                    {{ __('Product') }}
                 </x-jet-responsive-nav-link>
             @endif
         </div>
